@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+*.egg-info/
+__pycache__/
+.Python
+*.pyc
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+.next/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Sync info (auto-generated)
+.sync-info
+.last-sync
+
+# Temporary
+*.tmp
+.tmp/
+temp/
