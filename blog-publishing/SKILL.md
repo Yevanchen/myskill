@@ -161,30 +161,35 @@ service cloud.firestore {
 - No manual slug editing in UI
 - Title-only posts work fine (slug auto-generated)
 
-### Workflow 2: Script-Based Publishing
+### Workflow 2: Script-Based Publishing (OAuth 2.0)
 
-**File location:** `/home/node/clawd/submit-blog-to-firebase.py`
+**File location:** `/home/node/clawd/publish-blog-oauth.py`
 
 **Usage:**
 
 ```bash
-# Edit your MDX file
-nano /home/node/clawd/my-article.mdx
-
-# Run submission script (reads from file path)
-python3 /home/node/clawd/submit-blog-to-firebase.py
+# Publish with OAuth 2.0 authentication
+python3 /home/node/clawd/publish-blog-oauth.py /home/node/clawd/my-article.mdx
 
 # Output:
-# ✅ Success! Document ID: my-first-post
-# 🔗 Access: https://chenyefan.zeabur.app/blog/my-first-post
+# ✅ Published successfully!
+# 🔗 https://chenyefan.zeabur.app/blog/my-article
 ```
 
 **Script features:**
+- ✅ Generates Google OAuth 2.0 token from service account credentials
+- ✅ Authenticates with Firestore REST API using token
+- ✅ No hardcoded credentials (uses environment variables)
+- ✅ Long-term solution (credentials don't expire)
+- ✅ Secure (respects Firestore security rules)
 - Extracts frontmatter (YAML)
 - Generates slug from title
 - Validates slug (no empty slugs)
-- Sends to Firebase via REST API with auth token
 - Returns access URL
+
+**Requirements:**
+- Environment variables: `client_email`, `private_key`
+- Firebase service account credentials (stored in Zeabur)
 
 ### Workflow 3: Batch Updates (Advanced)
 
@@ -302,6 +307,34 @@ draft: true
 export BLOG_AUTH_TOKEN="sk_blog_evanchen_20260129_7f8e9d3c4b5a6f7e8d9c0b1a2f3e4d5c"
 python3 submit-blog-to-firebase.py
 ```
+
+---
+
+## Security & Long-Term Publishing
+
+### Why OAuth 2.0?
+
+The blog publishing script uses **Google OAuth 2.0 tokens** to authenticate with Firestore:
+
+1. **Service Account Credentials** → Generate JWT → Exchange for OAuth token → Authenticate REST API
+2. Credentials stored as **environment variables** (never hardcoded)
+3. Tokens automatically generated on each call (fresh token = secure)
+4. **No need to relax Firestore rules** — rules remain strict, only authenticated requests allowed
+
+### Setup (Already Done)
+
+- ✅ Firebase service account created
+- ✅ Credentials stored in Zeabur environment variables
+- ✅ Firestore rules updated to accept OAuth tokens
+- ✅ Publish script ready to use
+
+### Usage for Future Posts
+
+```bash
+python3 /home/node/clawd/publish-blog-oauth.py /path/to/article.mdx
+```
+
+That's it! No additional setup needed.
 
 ---
 
